@@ -4,8 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:english_words/english_words.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/services.dart' as rootBundle;
-
 import 'Standards.dart';
+
+Future<String> loadJson() async {
+  return await rootBundle.rootBundle.loadString("json/classes.json");
+}
 
 void main() {
   runApp(const MyApp());
@@ -13,6 +16,7 @@ void main() {
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
+
 
   @override
   Widget build(BuildContext context) {
@@ -24,67 +28,97 @@ class MyApp extends StatelessWidget {
 
 }
 
-class MainBody extends StatelessWidget {
+class MainBody extends StatefulWidget {
   const MainBody({Key? key}) : super(key: key);
 
   @override
+  State<MainBody> createState() => _MainBodyState();
+}
+
+class _MainBodyState extends State<MainBody> {
+  late String db;
+  late List<dynamic> standards;
+
+  @override
+  void initState() {
+    super.initState();
+    loadJson().then((data) {
+      setState(() {
+        db = data;
+      });
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    Map<String, dynamic> classSub = jsonDecode(db);
+    standards = classSub['classes'];
+    // print(standards);
+
     return Scaffold(
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: SizedBox(
+          height: 68,
+          width: MediaQuery.of(context).size.width-20,
+          child: SizedBox(
+              child:FloatingActionButton.extended(
+                shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                onPressed: (){
+                  // if(btnState) {
+                  //   _pushedSaved();
+                  // }
+                }, elevation: 20,
+                label: const Text('Continue'),
+
+                backgroundColor: const Color(0xFF270F36),
+
+              )
+          )
+      ),
       body: Padding(
         padding: const EdgeInsets.all(15.0),
-        child: FutureBuilder(
-          future: readJsonData(),
-          builder: (context, data) {
-            if(data.hasError) {
-              return Center(child: Text("${data.error}"));
-            } else if(data.hasData) {
-              return ListView(
-                scrollDirection: Axis.vertical,
-                children: [
-                  Column(
-                    children: [
-                      Row(
-                        children: [
-                          Text(
-                            "Teacher's profile",
-                            style: GoogleFonts.getFont('Epilogue',
-                                textStyle: const TextStyle(
-                                  color: Color(0xFF270F36),
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 14,
-                                  height: 5,
-                                )),
-                          ),
-                        ],
-                      ),
-                      Text(
-                        "Which Grades & Subjects you teach",
-                        style: GoogleFonts.getFont('Epilogue',
-                            textStyle: const TextStyle(
-                                color: Color(0xFF270F36),
-                                fontWeight: FontWeight.w700,
-                                fontSize: 28)),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    scrollDirection: Axis.vertical,
-                    itemCount: 4,
-                    itemBuilder: (context, index) {
-                      return const StandardClasses();
-                    },
-                  ),
-                ],
-              );
-            } else {
-                return Center(child: Text("hehe"));
-            }
-          }
+        child: ListView(
+          scrollDirection: Axis.vertical,
+          children: [
+            Column(
+              children: [
+                Row(
+                  children: [
+                    Text(
+                      "Teacher's profile",
+                      style: GoogleFonts.getFont('Epilogue',
+                          textStyle: const TextStyle(
+                            color: Color(0xFF270F36),
+                            fontWeight: FontWeight.w700,
+                            fontSize: 14,
+                            height: 5,
+                          )),
+                    ),
+                  ],
+                ),
+                Text(
+                  "Which Grades & Subjects you teach",
+                  style: GoogleFonts.getFont('Epilogue',
+                      textStyle: const TextStyle(
+                          color: Color(0xFF270F36),
+                          fontWeight: FontWeight.w700,
+                          fontSize: 28)),
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              scrollDirection: Axis.vertical,
+              itemCount: standards.length,
+              itemBuilder: (context, index) {
+                return StandardClasses(standards, index);
+              },
+            ),
+          ],
         ),
       ),
     );
@@ -92,31 +126,47 @@ class MainBody extends StatelessWidget {
 
   Future<List<Standards>> readJsonData() async{
     final jsonData = await rootBundle.rootBundle.loadString('json/classes.json');
-    final list = json.decode(jsonData) as List<dynamic>;
+    final list = json.decode(jsonData);
 
     return list.map((e) => Standards.fromJson(e)).toList();
   }
 }
 
-class StandardClasses extends StatelessWidget {
-  const StandardClasses({Key? key}) : super(key: key);
+class StandardClasses extends StatefulWidget {
+  final List<dynamic> standards;
+  final int index;
+  const StandardClasses(this.standards, this.index,  {Key? key}) : super(key: key);
+
+  @override
+  State<StandardClasses> createState() => _StandardClassesState();
+}
+
+class _StandardClassesState extends State<StandardClasses> {
+  // void printall() {
+  //   print("${widget.index}  ");
+  // }
 
   @override
   Widget build(BuildContext context) {
+    // printall();
+    int index = widget.index;
+    List<dynamic> subjects = widget.standards[index]['subjects'];
+    // List<dynamic> standardName = widget.standards[index];
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('standard'),
+        Text('${widget.standards[widget.index]['standard']} '),
         const SizedBox(
           height: 16,
         ),
         Container(
           height: 200,
           child: ListView.builder(
-            itemCount: 4,
+            itemCount: widget.standards[widget.index]["subjects"].length,
             scrollDirection: Axis.horizontal,
             itemBuilder: (context, index) {
-              return const ClassView();
+              return ClassView(subjects, index);
             },
           ),
         ),
@@ -125,24 +175,35 @@ class StandardClasses extends StatelessWidget {
   }
 }
 
-class ClassView extends StatelessWidget {
-  const ClassView({Key? key}) : super(key: key);
+class ClassView extends StatefulWidget {
+  final int index;
+  final List<dynamic> subjects;
+  const ClassView(this.subjects, this.index, {Key? key}) : super(key: key);
 
   @override
+  State<ClassView> createState() => _ClassViewState();
+}
+
+class _ClassViewState extends State<ClassView> {
+  @override
   Widget build(BuildContext context) {
+    String url = widget.subjects[widget.index]["subject_image"];
+    String subjectName = widget.subjects[widget.index]["subject_name"];
+    // String fullSubjectName = widget.standardName["standard"];
+    final checkedString = <String>{};
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(10),
         child: Container(
-          width: 160,
-          height: 200,
+          width: 180,
+          height: 280,
           decoration: BoxDecoration(
             color: Colors.white,
             boxShadow: [
               BoxShadow(
                   color: Colors.grey.shade100,
-                  offset: Offset(2, 4),
+                  offset: const Offset(2, 4),
                   spreadRadius: 6,
                   blurRadius: 4),
             ],
@@ -153,17 +214,39 @@ class ClassView extends StatelessWidget {
             children: [
               Container(
                 color: Colors.pink.shade50,
-                height: 140,
+                height: 118,
                 width: double.infinity,
                 child: Image.network(
-                  'https://picsum.photos/200/300',
+                  url,
                   fit: BoxFit.fill,
                 ),
               ),
               const SizedBox(
                 height: 10,
               ),
-              const Text('class name'),
+              // Text(subjectName),
+              CheckboxListTile(
+                title: Text(subjectName, style: GoogleFonts.getFont('Epilogue',
+                    textStyle: const TextStyle(
+                      color: Color(0xFF270F36),
+                      fontWeight: FontWeight.w700,
+                      fontSize: 14,
+                    ))),
+                checkColor: Colors.white,
+                activeColor: const Color(0xFF270F36),
+                value: checkedString.contains(subjectName),
+                onChanged: (bool? value) {
+                  setState(() {
+                  //   checkedValue = newValue;
+                    if(checkedString.contains(subjectName)){
+                      checkedString.remove(subjectName);
+                    } else {
+                      checkedString.add(subjectName);
+                    }
+                  });
+                },
+                controlAffinity: ListTileControlAffinity.leading,  //  <-- leading Checkbox
+              ),
             ],
           ),
         ),
