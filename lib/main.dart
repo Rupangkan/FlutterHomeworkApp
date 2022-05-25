@@ -17,164 +17,6 @@ void main() {
   runApp(const MyApp());
 }
 
-class ListPage extends StatefulWidget {
-  const ListPage({Key? key}) : super(key: key);
-
-  @override
-  State<ListPage> createState() => _ListPageState();
-}
-
-class _ListPageState extends State<ListPage> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: SizedBox(
-          height: 68,
-          width: MediaQuery.of(context).size.width-20,
-          child: SizedBox(
-              child:FloatingActionButton.extended(
-                shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.0))),
-                onPressed: (){
-                  Navigator.pop(context);
-                }, elevation: 20,
-                label: Text('Thank You', style: GoogleFonts.getFont('Epilogue',
-                    textStyle: const TextStyle(
-                      fontWeight: FontWeight.w700,
-                      fontSize: 14,
-                    )),
-                ),
-
-                backgroundColor: const Color(0xFF270F36),
-
-              )
-          )
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(15.0),
-        child: ListView(
-          scrollDirection: Axis.vertical,
-          children: [
-            Column(
-              children: [
-                Row(
-                  children: [
-                    Text(
-                      "Welcome",
-                      style: GoogleFonts.getFont('Epilogue',
-                          textStyle: const TextStyle(
-                            color: Color(0xFF270F36),
-                            fontWeight: FontWeight.w700,
-                            fontSize: 14,
-                            height: 5,
-                          )),
-                    ),
-                  ],
-                ),
-                Text(
-                  "You teach these classes & subjects",
-                  style: GoogleFonts.getFont('Epilogue',
-                      textStyle: const TextStyle(
-                          color: Color(0xFF270F36),
-                          fontWeight: FontWeight.w700,
-                          fontSize: 28)),
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              scrollDirection: Axis.vertical,
-              itemCount: checkedString.length,
-              itemBuilder: (context, index) {
-                // return StandardClasses(standards, index);
-                List checkedList = checkedString.toList();
-                return ListViewClass(checkedList, index);
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class ListViewClass extends StatefulWidget {
-
-  final List checkedList;
-  final index;
-  const ListViewClass(this.checkedList, this.index, {Key? key}) : super(key: key);
-
-  @override
-  State<ListViewClass> createState() => _ListViewClassState();
-}
-
-class _ListViewClassState extends State<ListViewClass> {
-  @override
-  Widget build(BuildContext context) {
-    return  Padding(
-        padding: const EdgeInsets.all(6),
-        child:Container(
-          //color: Colors.white10,
-            height: 70,
-            width: MediaQuery.of(context).size.width,
-            decoration: const BoxDecoration(
-                color: Colors.black12,
-                borderRadius: BorderRadius.all(Radius.circular(10.0))),
-            child:
-            Row(
-                children: <Widget>[
-
-                  Padding(
-                      padding: const EdgeInsets.all(6), //top: 5.0, left: 8
-                      child:
-                      Container(
-                        //color: Colors.deepPurple,
-                          width: 40,
-                          height: 40,
-                          margin: const EdgeInsets.all(3.0),
-                          padding: const EdgeInsets.all(3.0),
-                          decoration: const BoxDecoration(
-                              color: Color(0xFF270F36),
-                              borderRadius: BorderRadius.all(Radius.circular(7.0))),
-
-                          child:
-                          Align(
-                            alignment: Alignment.center,
-                            child:Text(
-                              widget.checkedList[widget.index].split(",").first,
-                              style: const TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 13
-                              ),
-                            ),
-                          )
-                      )
-                  ),
-
-                  Text(
-                    widget.checkedList[widget.index].split(",").last,
-                    style: const TextStyle(
-                        color: Color(0xFF270F36),
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15
-                    ),
-                  ),
-
-                  const Padding(padding: EdgeInsets.only(bottom: 75))
-                ]
-            )
-          // )
-        )
-    );
-  }
-}
-
-
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -216,6 +58,13 @@ class _MainBodyState extends State<MainBody> {
     Map<String, dynamic> classSub = jsonDecode(db);
     standards = classSub['classes'];
     // print(standards);
+    Color getBackgroundColor() {
+      if(buttonState==false) {
+        return Colors.grey;
+      } else {
+        return const Color(0xFF270F36);
+      }
+    }
 
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
@@ -240,7 +89,9 @@ class _MainBodyState extends State<MainBody> {
                     )),
                 ),
 
+
                 backgroundColor: const Color(0xFF270F36),
+                // backgroundColor: getBackgroundColor(),
 
               )
           )
@@ -281,6 +132,7 @@ class _MainBodyState extends State<MainBody> {
             ),
             ListView.builder(
               shrinkWrap: true,
+              padding: const EdgeInsets.only(bottom: kFloatingActionButtonMargin + 50),
               physics: const NeverScrollableScrollPhysics(),
               scrollDirection: Axis.vertical,
               itemCount: standards.length,
@@ -454,6 +306,165 @@ class _ClassViewState extends State<ClassView> {
   }
 }
 
+
+class ListPage extends StatefulWidget {
+  const ListPage({Key? key}) : super(key: key);
+
+  @override
+  State<ListPage> createState() => _ListPageState();
+}
+
+class _ListPageState extends State<ListPage> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+
+      body: Padding(
+        padding: const EdgeInsets.all(15.0),
+        child: ListView(
+          scrollDirection: Axis.vertical,
+          children: [
+            Column(
+              children: [
+                Row(
+                  children: [
+                    Text(
+                      "Welcome",
+                      style: GoogleFonts.getFont('Epilogue',
+                          textStyle: const TextStyle(
+                            color: Color(0xFF270F36),
+                            fontWeight: FontWeight.w700,
+                            fontSize: 14,
+                            height: 5,
+                          )),
+                    ),
+                  ],
+                ),
+                Text(
+                  "You teach these classes & subjects",
+                  style: GoogleFonts.getFont('Epilogue',
+                      textStyle: const TextStyle(
+                          color: Color(0xFF270F36),
+                          fontWeight: FontWeight.w700,
+                          fontSize: 28)),
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            ListView.builder(
+              shrinkWrap: true,
+              padding: const EdgeInsets.only(bottom: kFloatingActionButtonMargin + 50),
+              physics: const NeverScrollableScrollPhysics(),
+              scrollDirection: Axis.vertical,
+              itemCount: checkedString.length,
+              itemBuilder: (context, index) {
+                // return StandardClasses(standards, index);
+                List checkedList = checkedString.toList();
+                return ListViewClass(checkedList, index);
+              },
+            ),
+          ],
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: SizedBox(
+          height: 68,
+          width: MediaQuery.of(context).size.width-20,
+          child: SizedBox(
+              child:FloatingActionButton.extended(
+                shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                onPressed: (){
+                  Navigator.pop(context);
+                }, elevation: 20,
+                label: Text('Thank You', style: GoogleFonts.getFont('Epilogue',
+                    textStyle: const TextStyle(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 14,
+                    )),
+                ),
+
+                backgroundColor: const Color(0xFF270F36),
+
+              )
+          )
+      ),
+    );
+  }
+}
+
+class ListViewClass extends StatefulWidget {
+
+  final List checkedList;
+  final index;
+  const ListViewClass(this.checkedList, this.index, {Key? key}) : super(key: key);
+
+  @override
+  State<ListViewClass> createState() => _ListViewClassState();
+}
+
+class _ListViewClassState extends State<ListViewClass> {
+  @override
+  Widget build(BuildContext context) {
+    return  Padding(
+        padding: const EdgeInsets.all(6),
+        child:Container(
+          //color: Colors.white10,
+            height: 70,
+            width: MediaQuery.of(context).size.width,
+            decoration: const BoxDecoration(
+                color: Colors.black12,
+                borderRadius: BorderRadius.all(Radius.circular(10.0))),
+            child:
+            Row(
+                children: <Widget>[
+
+                  Padding(
+                      padding: const EdgeInsets.all(6), //top: 5.0, left: 8
+                      child:
+                      Container(
+                        //color: Colors.deepPurple,
+                          width: 40,
+                          height: 40,
+                          margin: const EdgeInsets.all(3.0),
+                          padding: const EdgeInsets.all(3.0),
+                          decoration: const BoxDecoration(
+                              color: Color(0xFF270F36),
+                              borderRadius: BorderRadius.all(Radius.circular(7.0))),
+
+                          child:
+                          Align(
+                            alignment: Alignment.center,
+                            child:Text(
+                              widget.checkedList[widget.index].split(",").first,
+                              style: const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 13
+                              ),
+                            ),
+                          )
+                      )
+                  ),
+
+                  Text(
+                    widget.checkedList[widget.index].split(",").last,
+                    style: const TextStyle(
+                        color: Color(0xFF270F36),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15
+                    ),
+                  ),
+
+                  const Padding(padding: EdgeInsets.only(bottom: 75))
+                ]
+            )
+          // )
+        )
+    );
+  }
+}
 // class MyHomePage extends StatelessWidget {
 //   const MyHomePage({Key? key}) : super(key: key);
 //
