@@ -2,7 +2,7 @@
 
 A homework app to create a beautiful ui with from a given set of data.
 
-<img width="395" alt="Continue" src="https://user-images.githubusercontent.com/64887274/170391277-afc0c9ac-2746-41bf-a5e0-58d8d2dd558f.jpg">  <img width="400" alt="Thank you" src="https://user-images.githubusercontent.com/64887274/170391259-dc15260f-ef53-4978-b93e-ba0a45ee6680.jpg">
+<img width="370" alt="Continue" src="https://user-images.githubusercontent.com/64887274/170391277-afc0c9ac-2746-41bf-a5e0-58d8d2dd558f.jpg">  <img width="375" alt="Thank you" src="https://user-images.githubusercontent.com/64887274/170391259-dc15260f-ef53-4978-b93e-ba0a45ee6680.jpg">
 
 <!-- ![IMG_20220526_060141](https://user-images.githubusercontent.com/64887274/170391277-afc0c9ac-2746-41bf-a5e0-58d8d2dd558f.jpg)[200]
 ![IMG_20220526_060154](https://user-images.githubusercontent.com/64887274/170391259-dc15260f-ef53-4978-b93e-ba0a45ee6680.jpg)[200] -->
