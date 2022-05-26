@@ -1,6 +1,6 @@
 # Flutter-HomeworkApp
 
-A homework app to create a beautiful ui with from a given set of data.
+A homework app to create a beautiful ui from a given set of data.
 
 <img width="370" alt="Continue" src="https://user-images.githubusercontent.com/64887274/170391277-afc0c9ac-2746-41bf-a5e0-58d8d2dd558f.jpg">  <img width="375" alt="Thank you" src="https://user-images.githubusercontent.com/64887274/170391259-dc15260f-ef53-4978-b93e-ba0a45ee6680.jpg">
 
